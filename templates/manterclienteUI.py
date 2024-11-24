@@ -1,9 +1,12 @@
-import streamlit as st
-import pandas as pd
+import streamlit as st # type: ignore
+import pandas as pd # type: ignore
 from views import View
 import time
 
+
 class ManterClienteUI:
+
+    @staticmethod
     def main():
         st.header("Cadastro de Clientes")
         tab1, tab2, tab3, tab4 = st.tabs(["Listar", "Inserir", "Atualizar", "Excluir"])
@@ -12,6 +15,7 @@ class ManterClienteUI:
         with tab3: ManterClienteUI.atualizar()
         with tab4: ManterClienteUI.excluir()
 
+    @staticmethod
     def listar():
         clientes = View.cliente_listar()
         if len(clientes) == 0: 
@@ -23,17 +27,28 @@ class ManterClienteUI:
             df = pd.DataFrame(dic)
             st.dataframe(df)
 
+    @staticmethod
     def inserir():
         nome = st.text_input("Informe o nome do cliente")
         email = st.text_input("Informe o e-mail")
         fone = st.text_input("Informe o fone")
         senha = st.text_input("Informe a senha", type="password")
         if st.button("Inserir"):
-            View.cliente_inserir(nome, email, fone, senha)
-            st.success("Cliente inserido com sucesso")
-            time.sleep(2)
-            st.rerun()
+            valido = True
+            if not nome or not email or not fone or not senha:
+                st.warning("Adicione Todos Os Valores.")
+            else:
+                for p in View.cliente_listar():
+                    if p.get_email() == email:
+                        st.warning("Esse email já é usado por outro usuário.")
+                        valido = False
+                        
+                if valido:
+                    View.cliente_inserir(nome, email, fone, senha)
+                    st.success("Paciente inserido.")
+                    st.rerun()
 
+    @staticmethod
     def atualizar():
         clientes = View.cliente_listar()
         if len(clientes) == 0: 
@@ -45,11 +60,21 @@ class ManterClienteUI:
             fone = st.text_input("Informe o novo fone", op.fone)
             senha = st.text_input("Informe a nova senha", op.senha, type="password")
             if st.button("Atualizar"):
-                View.cliente_atualizar(op.id, nome, email, fone, senha)
-                st.success("Cliente atualizado com sucesso")
-                time.sleep(2)
-                st.rerun()
+                valido = True
+                if not nome or not email or not fone or not senha:
+                    st.warning("Selecione Todos Os Valores.")
+                else:
+                    for p in View.cliente_listar():
+                        if p.get_email() == email:
+                            st.warning("Esse email já é usado por outro usuário.")
+                            valido = False
+                            
+                    if valido:
+                        View.cliente_atualizar(op, nome, email, fone, senha)
+                        st.success("Paciente atualizado.")
+                        st.rerun()
 
+    @staticmethod
     def excluir():
         clientes = View.cliente_listar()
         if len(clientes) == 0: 
@@ -57,7 +82,11 @@ class ManterClienteUI:
         else:
             op = st.selectbox("Exclusão de cliente", clientes)
             if st.button("Excluir"):
-                View.cliente_excluir(op.id)
-                st.success("Cliente excluído com sucesso")
-                time.sleep(2)
-                st.rerun()
+                for x in View.horario_listar():
+                    if op.get_idCliente() == x.get_idCliente():
+                        st.warning("Cliente possui horários agendados")
+                    else:
+                        View.cliente_excluir(op.get_idCliente())
+                        st.success("Cliente excluído com sucesso")
+                        
+                        st.rerun()

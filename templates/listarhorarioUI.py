@@ -1,12 +1,14 @@
-import streamlit as st
-import pandas as pd
+import streamlit as st # type: ignore
+import pandas as pd # type: ignore
 from views import View
 
 class ListarHorarioUI:
+    @staticmethod
     def main():
         st.header("Horários Disponíveis")
         ListarHorarioUI.listar()
 
+    @staticmethod
     def listar():
         horarios = View.horario_listar_disponiveis()
         if len(horarios) == 0:

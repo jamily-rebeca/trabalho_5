@@ -48,15 +48,15 @@ class Servico:
 
 # Persistência
 class Servicos:
-  objetos = []    # atributo estático
+  objetos: list[Servico] = []    # atributo estático
 
   @classmethod
   def inserir(cls, obj):
     cls.abrir()
     m = 0
     for c in cls.objetos:
-      if c.id > m: m = c.id
-    obj.id = m + 1
+      if c.get_idServico() > m: m = c.get_idServico()
+    obj.set_idServico(m + 1)
     cls.objetos.append(obj)
     cls.salvar()
 
@@ -64,21 +64,21 @@ class Servicos:
   def listar_id(cls, id):
     cls.abrir()
     for c in cls.objetos:
-      if c.id == id: return c
+      if c.get_idServico() == id: return c
     return None  
   
   @classmethod
   def atualizar(cls, obj):
     c = cls.listar_id(obj.id)
     if c != None:
-      c.descricao = obj.descricao
-      c.valor = obj.valor
-      c.duracao = obj.duracao
+      c.set_descricao(obj.get_descricao())
+      c.set_valor(obj.get_valor())
+      c.set_duracao(obj.get_duracao())
       cls.salvar()
 
   @classmethod
   def excluir(cls, obj):
-    c = cls.listar_id(obj.id)
+    c = cls.listar_id(obj.get_idServico())
     if c != None:
       cls.objetos.remove(c)
       cls.salvar()

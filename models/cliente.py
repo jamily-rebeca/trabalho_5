@@ -67,15 +67,16 @@ class Cliente:
 
 # Persistência
 class Clientes:
-  objetos = []    # atributo estático
+  objetos: list[Cliente] = []    # atributo estático
 
   @classmethod
   def inserir(cls, obj):
     cls.abrir()
     m = 0
     for c in cls.objetos:
-      if c.id > m: m = c.id
-    obj.id = m + 1
+      if c.get_idCliente() > m: 
+        m = c.get_idCliente()
+    obj.set_idCliente(m + 1)
     cls.objetos.append(obj)
     cls.salvar()
 
@@ -83,22 +84,22 @@ class Clientes:
   def listar_id(cls, id):
     cls.abrir()
     for c in cls.objetos:
-      if c.id == id: return c
+      if c.get_idCliente() == id: return c
     return None  
   
   @classmethod
   def atualizar(cls, obj):
     c = cls.listar_id(obj.id)
     if c != None:
-      c.nome = obj.nome
-      c.email = obj.email
-      c.fone = obj.fone
-      c.senha = obj.senha
+      c.set_nome(obj.get_nome())
+      c.set_email(obj.get_email())
+      c.set_fone(obj.get_fone())
+      c.set_senha(obj.get_senha())
       cls.salvar()
 
   @classmethod
   def excluir(cls, obj):
-    c = cls.listar_id(obj.id)
+    c = cls.listar_id(obj.get_idCliente())
     if c != None:
       cls.objetos.remove(c)
       cls.salvar()
@@ -106,7 +107,7 @@ class Clientes:
   @classmethod
   def listar(cls):
     cls.abrir()
-    cls.objetos.sort(key=lambda cliente: cliente.nome)
+    cls.objetos.sort(key=lambda cliente: cliente.get_nome())
     return cls.objetos
 
   @classmethod
