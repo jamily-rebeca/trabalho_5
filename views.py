@@ -7,7 +7,7 @@ class View:
     @staticmethod
     def cliente_admin():
         for c in View.cliente_listar():
-            if c.email == "admin": return
+            if c.get_email() == "admin": return
         View.cliente_inserir("admin", "admin", "1234", "1234")
 
     @staticmethod
@@ -36,15 +36,15 @@ class View:
     @staticmethod
     def cliente_autenticar(email, senha):
         for c in View.cliente_listar():
-            if c.email == email and c.senha == senha:
-                return {"id" : c.id, "nome" : c.nome }
+            if c.get_email() == email and c.get_senha() == senha:
+                return {"id" : c.get_idCliente(), "nome" : c.get_nome() }
         return None
 
     def horario_inserir(data, confirmado, id_cliente, id_servico):
         c = Horario(0, data)
-        c.confirmado = confirmado
-        c.id_cliente = id_cliente
-        c.id_servico = id_servico
+        c.set_confirmado(confirmado)
+        c.set_idCliente(id_cliente)
+        c.set_idServico(id_servico)
         Horarios.inserir(c)
 
     @staticmethod
@@ -56,15 +56,15 @@ class View:
         horarios = View.horario_listar()
         disponiveis = []
         for h in horarios:
-            if h.data >= datetime.now() and h.id_cliente == None: disponiveis.append(h)
+            if h.data >= datetime.now() and h.get_idCliente() == None: disponiveis.append(h)
         return disponiveis   
 
     @staticmethod
     def horario_atualizar(id, data, confirmado, id_cliente, id_servico):
         c = Horario(id, data)
-        c.confirmado = confirmado
-        c.id_cliente = id_cliente
-        c.id_servico = id_servico
+        c.set_confirmado(confirmado)
+        c.set_idCliente(id_cliente)
+        c.set_idServico(id_servico)
         Horarios.atualizar(c)
 
     @staticmethod
@@ -109,6 +109,6 @@ class View:
         Servicos.atualizar(c)
 
     @staticmethod
-    def servico_excluir(id):
-        c = Servico(id, "", 0, 0)
+    def servico_excluir(id, descricao, valor, duracao):
+        c = Servico(id, descricao, valor, duracao)
         Servicos.excluir(c)    

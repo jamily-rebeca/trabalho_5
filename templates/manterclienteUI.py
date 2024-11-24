@@ -55,10 +55,10 @@ class ManterClienteUI:
             st.write("Nenhum cliente cadastrado")
         else:
             op = st.selectbox("Atualização de cliente", clientes)
-            nome = st.text_input("Informe o novo nome do cliente", op.nome)
-            email = st.text_input("Informe o novo e-mail", op.email)
-            fone = st.text_input("Informe o novo fone", op.fone)
-            senha = st.text_input("Informe a nova senha", op.senha, type="password")
+            nome = st.text_input("Informe o novo nome do cliente", op.get_nome())
+            email = st.text_input("Informe o novo e-mail", op.get_email())
+            fone = st.text_input("Informe o novo fone", op.get_fone())
+            senha = st.text_input("Informe a nova senha", op.get_senha(), type="password")
             if st.button("Atualizar"):
                 valido = True
                 if not nome or not email or not fone or not senha:
@@ -70,8 +70,9 @@ class ManterClienteUI:
                             valido = False
                             
                     if valido:
-                        View.cliente_atualizar(op, nome, email, fone, senha)
+                        View.cliente_atualizar(op.get_idCliente(), nome, email, fone, senha)
                         st.success("Paciente atualizado.")
+                        time.sleep(2)
                         st.rerun()
 
     @staticmethod

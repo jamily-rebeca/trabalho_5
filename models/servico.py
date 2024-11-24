@@ -90,8 +90,19 @@ class Servicos:
 
   @classmethod
   def salvar(cls):
+    servico = []
+
+    for s in cls.objetos:
+      servico.append(
+        {
+          "id": s.get_idServico(),
+          "descricao": s.get_descricao(),
+          "valor": s.get_valor(),
+          "duracao": s.get_duracao(),
+        }
+      )
     with open("servicos.json", mode="w") as arquivo:   # w - write
-      json.dump(cls.objetos, arquivo, default = vars)
+      json.dump(servico, arquivo)
 
   @classmethod
   def abrir(cls):

@@ -89,7 +89,7 @@ class Clientes:
   
   @classmethod
   def atualizar(cls, obj):
-    c = cls.listar_id(obj.id)
+    c = cls.listar_id(obj.get_idCliente())
     if c != None:
       c.set_nome(obj.get_nome())
       c.set_email(obj.get_email())
@@ -112,8 +112,19 @@ class Clientes:
 
   @classmethod
   def salvar(cls):
+    clientes = []
+    for c in cls.objetos:
+      clientes.append(
+        {
+          "id": c.get_idCliente(), 
+          "nome": c.get_nome(),
+          "email": c.get_email(),
+          "fone": c.get_fone(),
+          "senha": c.get_senha(),
+        }
+      )
     with open("clientes.json", mode="w") as arquivo:   # w - write
-      json.dump(cls.objetos, arquivo, default = vars)
+      json.dump(clientes, arquivo)
 
   @classmethod
   def abrir(cls):

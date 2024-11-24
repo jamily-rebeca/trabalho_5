@@ -15,15 +15,16 @@ class Horario:
     def get_idHorario(self):
         return self.__idHorario
     
-    def set_horario(self, horario: datetime):
+    def set_horario(self, horario):
         if horario:
             self.__horario = horario
         else:
             raise ValueError("determine um horário")
 
     def get_horario_str(self):
-        strHorario = datetime.strftime(self.__horario, "%d/%m/%Y %H:%M")
-        return strHorario
+    #     strHorario = datetime.strftime(self.__horario, "%d/%m/%Y")
+    #     return strHorario
+        return self.__horario
     
     def get_horario(self):
         return self.__horario
@@ -103,6 +104,18 @@ class Horarios:
   
   @classmethod
   def salvar(cls):
+    horario = []
+    for h in cls.objetos:
+       horario.append(
+          {
+            "id": h.get_idHorario(),
+            "data": h.get_horario_str(),
+            "confirmado": h.get_confirmado(),
+            "id_cliente": h.get_idCliente(),
+            "id_servico": h.get_idServico(),
+          }
+       )
+
     with open("horarios.json", mode="w") as arquivo:   # w - write
       json.dump(cls.objetos, arquivo, default = Horario.to_json)
 
@@ -115,7 +128,8 @@ class Horarios:
         for obj in texto:   
           c = Horario(
             obj["id"], 
-            datetime.strptime(obj["data"], "%d/%m/%Y %H:%M"))
+            obj["data"],
+          )
           c.confirmado = obj["confirmado"]
           c.id_cliente = obj["id_cliente"]
           c.id_servico = obj["id_servico"]

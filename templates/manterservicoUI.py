@@ -44,9 +44,9 @@ class ManterServicoUI:
             st.write("Nenhum serviço cadastrado")
         else:
             op = st.selectbox("Atualização de serviço", servicos)
-            descricao = st.text_input("Informe o novo nome do serviço", op.descricao)
-            valor = st.text_input("Informe o novo valor (R$)", op.valor)
-            duracao = st.text_input("Informe a nova duração (minutos)", str(op.duracao))
+            descricao = st.text_input("Informe o novo nome do serviço", op.get_descricao())
+            valor = st.text_input("Informe o novo valor (R$)", op.get_valor())
+            duracao = st.text_input("Informe a nova duração (minutos)", str(op.get_duracao()))
             if st.button("Atualizar"):
                 View.servico_atualizar(op.get_idServico(), descricao, float(valor), int(duracao))
                 st.success("Serviço atualizado com sucesso")
@@ -61,10 +61,14 @@ class ManterServicoUI:
         else:
             op = st.selectbox("Exclusão de serviço", servicos)
             if st.button("Excluir"):
+                valido = True
                 for horarios in View.horario_listar():
+                    st.write("fjkelskf vsrh")
                     if op.get_idServico() == horarios.get_idServico():
                         st.warning("Serviço com horário já agendado")
-                    else:
-                        View.servico_excluir(op.get_idServico())
-                        st.success("Serviço excluído com sucesso")
-                        st.rerun()
+                        valido = False
+                if valido:
+                    View.servico_excluir(op.get_idServico(), op.get_descricao(), op.get_valor(), op.get_duracao())
+                    st.success("Serviço excluído com sucesso")
+                    time.sleep(2)
+                    st.rerun()
